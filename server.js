@@ -31,7 +31,7 @@ const writeToFile = (destination, content) =>
     err ? console.error(err) : console.info(`\nData written to ${destination}`)
   );
 
-//WORK FROM THIS POINT ON
+
 const readAndAppend = (content, file) => {
     fs.readFile(file, 'utf8', (err, data) => {
       if (err) {
@@ -64,7 +64,29 @@ app.post('/api/notes', (req, res) => {
     }
 });
 
-//THIS IS GOOD FROM HERE
+app.delete("/api/notes/:id", function(req, res) {
+  console.log("req params", req.params.id)
+  fs.readFile('./db/db.json', 'utf-8',(err,data)=>{
+    if(err){
+      console.error(err)
+    }else{
+      let parsedData = JSON.parse(data)
+      console.log(parsedData)
+      console.log(req.params.id)
+      parsedData = parsedData.filter(({ id }) => id !== req.params.id);
+      console.log(parsedData)
+      fs.writeFile('./db/db.json', JSON.stringify(parsedData, null, 4), (err) =>
+    err ? console.error(err) : console.info(`\nData written`))
+
+    }
+  })
+
+
+
+  res.json('hi')
+  
+});
+
 app.get('*', (req, res) =>
   res.sendFile(path.join(__dirname, '/public/index.html'))
 );
